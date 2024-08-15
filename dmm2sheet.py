@@ -5,11 +5,11 @@ from google.oauth2.service_account import Credentials
 import urllib.parse
 
 # 設定 Google Sheets API 認證
-SERVICE_ACCOUNT_FILE = 'D:/VisualStudioCode/DMM2Sheet/dmm-scrapying-ca95a23a4216.json'  # 憑證文件路徑
+SERVICE_ACCOUNT_FILE = '$USER API.json'  # 憑證文件路徑
 
 credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE)
 client = pygsheets.authorize(service_account_file=SERVICE_ACCOUNT_FILE)
-spreadsheet_id = '1CSJW28pvLHj9w3L1fiJhZp3opGdHLPdq1EdhqwaqIzs'
+spreadsheet_id = '$Target sheet ID'
 sh = client.open_by_key(spreadsheet_id)
 
 # 年齡認證
@@ -148,11 +148,6 @@ def main():
     # 讀取"女優列表"分頁
     actress_list_sheet = sh.worksheet_by_title("女優列表")
     actress_names = actress_list_sheet.get_col(1, include_tailing_empty=False)[1:]  # 跳過標題列，從A2開始
-    
-    # worksheet_names = [worksheet.title for worksheet in sh.worksheets()]
-    # print(worksheet_names)
-    # 取得 D 欄的所有儲存格值
-    #d_col_values = actress_list_sheet.col_values(4)[1:]  # 跳過標題列，從 D2 開始
 
     for i, actress_name in enumerate(actress_names, start=2):
         actress_id_value = actress_list_sheet.cell(f'D{i}').value
