@@ -5,11 +5,11 @@ from google.oauth2.service_account import Credentials
 import urllib.parse
 
 # 設定 Google Sheets API 認證
-SERVICE_ACCOUNT_FILE = '$USER API.json'  # 憑證文件路徑
+SERVICE_ACCOUNT_FILE = 'D:/VisualStudioCode/DMM2Sheet/dmm-scrapying-ca95a23a4216.json'  # 憑證文件路徑
 
 credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE)
 client = pygsheets.authorize(service_account_file=SERVICE_ACCOUNT_FILE)
-spreadsheet_id = '$Target sheet ID'
+spreadsheet_id = '1CSJW28pvLHj9w3L1fiJhZp3opGdHLPdq1EdhqwaqIzs'
 sh = client.open_by_key(spreadsheet_id)
 
 # 年齡認證
@@ -178,12 +178,7 @@ def write_to_google_sheets(actress_name, video_data, current_row_count, current_
             print('成功寫入單體作品')
             worksheet.update_value(f'K{row_index}', data['best_of'])
             print('成功寫入總集編')            
-            # 將其他的ジャンル資料寫入J欄之後的欄位
-            col_index = 12  # K欄開始
-            for genre in data['genres']:
-                if genre not in ['単体作品', 'ベスト・総集編']:
-                    worksheet.update_value((current_row_index, col_index), genre)
-                    col_index += 1          
+    
             # 將影片網址放在該筆資料的最後寫入，如果影片網址為空，則表示此筆資料未寫入完整。
             worksheet.update_value(f'G{row_index}', data['video_page_url'])
             print('成功寫入影片網址')
@@ -223,9 +218,19 @@ def main():
     # 讀取"女優列表"分頁
     actress_list_sheet = sh.worksheet_by_title("女優列表")
     actress_names = actress_list_sheet.get_col(1, include_tailing_empty=False)[1:]  # 跳過標題列，從A2開始
-    
-    # 設定想排除的名稱，工作表女優列表內的A欄的值。
-    exclude_actress_names = [""] 
+
+    exclude_actress_names = [""]
+    # "讀我", "女優列表", "TempList", "波多野手動刪除的資料", "小泉彩RK已下載", "「桜朱音」RK已下載", "「さくら林檎」勞贖處理過", "愛田由PBList", "橘れもん_Old", "早乙女ルイ_old",
+    # "上原亜衣", "古都ひかる", "さくら林檎", "香澄はるか", "橘梨紗", "蒼井そら", "中西里菜", "北野のぞみ", "竹内あい", "椎名みくる", "RIO", "みひろ", "鮎川なお", "RION", "宇都宮しをん",
+    # "飯島愛", "あべみかこ", "橘なお", "川嶋穂花", "白鳥さくら", "湖南みるく", "Rina(りな)", "坂本リナ", "緒川りお", "来栖りお", "真奈りおな", "RION（二宮沙羅）", "柚木あや", "一ノ瀬あおい",
+    # "七嶋舞", "松下紗栄子", "楪カレン", "山手梨愛", "さつき芽衣", "野々浦暖", "柊るい", "三田ゆい", "岡本真憂", "七沢みあ", "吉崎直緒", "九重かんな", "若菜奈央", "園田みおん", "上野莉奈",
+    # "長谷川るい", "美織", "秋元美織", "雨宮琴音", "乙アリス", "吉川あいみ", "夢乃あいか", "安齋らら", "美里有紗", "愛沢かりん", "神無月れな", "折原ほのか", "赤井美月", "篠宮ゆり", "あやみ旬果",
+    # "桐谷ユリア", "絵色千佳", "美雪ありす", "北川瞳", "小倉奈々", "水嶋あずみ", "椎名ゆな", "桜ここみ", "麻倉憂", "桃谷エリカ", "愛乃なみ", "桐原エリカ", "松岡ちな", "鈴木心春", "小倉ゆず",
+    # "穂花", "RIONA(りおな)", "波多野結衣", "成瀬心美", "杏樹紗奈", "くるみひな", "山手栞", "希志あいの", "大橋未久", "橘くらら", "冬月かえで", "前嶋美歩", "香坂百合", "一ノ瀬アメリ", "星野あかり",
+    # "神谷姫", "神谷美雪", "小沢菜穂", "美竹涼子", "峰なゆか", "水原あき", "かすみ果穂", "桜朱音", "稲森しほり", "菅野亜梨沙", "穂花(wrong)", "愛田由PBList", "あいだゆあ", "持月真由", "高井桃",
+    # "里美ゆりあ", "小泉彩", "松島かえで", "高樹マリア", "堤さやか", "及川奈央", "鮎川あみ", "川島和津実", "相沢梨菜", "白石ひとみ", "桜井りあ", "野宮さとみ", "さくら林檎", "田中レモン", "椎名そら",
+    # "果梨", "河北彩花", "水卜さくら", "鈴村あいり", "早乙女ルイ", "橘れもん", "さとう遥希", "鮎川なお", "みひろ", "RIO", "椎名みくる", "竹内あい","北野のぞみ", "中西里菜", "蒼井そら", "橘梨紗",
+    # "香澄はるか", "古都ひかる", "上原亜衣", "林ゆな", "楓カレン", "", "", "", 
 
     for i, actress_name in enumerate(actress_names, start=2):
         if actress_name not in exclude_actress_names:
